@@ -1,0 +1,8 @@
+You log goes in this  file.
+Start: Mon, 26 Jan 2015 19:00:00 -0800
+End: Mon, 26 Jan 2015 23:00:00 -0800
+Tasks: After reviewed the lectures and looked through the assignment, feel the assignment is very hard. Reviewed the lectures few more times and got some ideas where to start. Finished most part of html file.
+
+Start: Tue, 27 Jan 2015 13:00:00 -0800
+End: Tue, 27 Jan 2015 16:31:07 -0800
+Tasks: Worked on aJAX, test on server, successfully got gists. Have difficulties to parse JSON object. 
