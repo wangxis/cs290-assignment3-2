@@ -6,3 +6,13 @@ Tasks: After reviewed the lectures and looked through the assignment, feel the a
 Start: Tue, 27 Jan 2015 13:00:00 -0800
 End: Tue, 27 Jan 2015 16:31:07 -0800
 Tasks: Worked on aJAX, test on server, successfully got gists. Have difficulties to parse JSON object. 
+
+
+Start: Tue, 27 Jan 2015 20:50:00 -0800
+End: Tue, 27 Jan 2015 23:50:07 -0800
+Tasks: Worked on aJAX, text pass page request, work on filter gist by language. All failed.
+
+Start: Wed, 28 Jan 2015 13:00:00 -0800
+End: Tue, 28 Jan 2015 17:00:07 -0800
+Tasks: Figure out the way to access language in gists, what page request mean.
+
