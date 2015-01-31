@@ -4,26 +4,22 @@
   <meta charset="UTF-8">
   <title>assignment3</title>
   <script src="a3.js"> </script>
-  
-</head> 
+ </head> 
 <body>
   <div><h1>Gist search</h1></div>
-  <h3>Favorites List</h3>
-  <div id="emptyList"></div>
+  <h3>Favorites List <input type="button" onclick="clearFavoriteList()" value="Clear"></h3>
+  <div id="myFavoriteList"></div>
   <form>
-    Pages to display(between 1 and 5): <input type="number" name="pageNumber" min="1" max="5"> <br>
-	Languages: <br>
-	<input type="checkbox" id="Python"> Python  <br>
-	<input type="checkbox" id="JSON">JSON  <br>
-	<input type="checkbox" id="JavaScript">JavaScript <br>
+    Pages to display(between 1 and 5): <input type="number" name="pageNumber" min="1" max="5"> 
+	<div id="outOfRange"> </div><br>
+	Languages: 
+	<input type="checkbox" id="Python"> Python  
+	<input type="checkbox" id="JSON">JSON  
+	<input type="checkbox" id="JavaScript">JavaScript 
 	<input type="checkbox" id="SQL">SQL <br>
 	<input type="button" name="search" onclick="getGist()" value="Click me to search"> <br>
 	<div></div>
   </form>
-
-
-
-
+	<div id="searchList"></div>
 </body>
-
 </html>

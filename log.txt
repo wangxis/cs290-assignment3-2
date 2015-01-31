@@ -13,6 +13,26 @@ End: Tue, 27 Jan 2015 23:50:07 -0800
 Tasks: Worked on aJAX, text pass page request, work on filter gist by language. All failed.
 
 Start: Wed, 28 Jan 2015 13:00:00 -0800
-End: Tue, 28 Jan 2015 17:00:07 -0800
+End: Wed, 28 Jan 2015 17:00:07 -0800
 Tasks: Figure out the way to access language in gists, what page request mean.
+
+
+Start: Wed, 28 Jan 2015 21:00:00 -0800
+End: Wed, 28 Jan 2015 23:50:07 -0800
+Tasks: work out filtering gists based on language choices and output list on console. 
+
+Start: Thu, 29 Jan 2015 20:30:00 -0800
+End: Fri, 30 Jan 2015 01:30:07 -0800
+Tasks: Can print the filter list on webpage, make clickable link and button.
+
+Start: Fri, 30 Jan 2015 17:00:00 -0800
+End: Fri, 30 Jan 2015 08:30:00 -0800
+Tasks: Store the list to loacal storage, print out error message when page input is out of range. Fixed cancellation problem when reguest mutiple pages.
+
+Start: Fri, 30 Jan 2015 21:30:00 -0800
+End: Sat, 31 Jan 2015 2:00:00 -0800
+Tasks: spent most of time to figure out how to get a handle to add a gist to favorite list, find the solutoin at 2am. looking good to get it done everything.
+
+
+
 

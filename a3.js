@@ -1,50 +1,126 @@
 function getGist() {
-	var requset = new XMLHttpRequest();
+	var webList = [];
+	var requset = new XMLHttpRequest()
 	if(!requset) {
 		throw "Failed to create XMLHttpReuest";
 	}
-	var url = "https://api.github.com/gists";
-
-	var params = {
-		page: 1,
-		
-	};
-	url += "?" + urlStringify(params);
-	requset.onreadystatechange = function() {
-		if(this.readyState === 4) {
-			var i = 0;
-			var gistItem = JSON.parse(this.responseText);
-			var languageChoices = getLanguageFromUser();
-			var webList = [];
-			if (languageChoices.length == 0){
-				console.log("empty lan");
-				webList = getNonFilterList(gistItem);
-			} else {
-				console.log(languageChoices);
-				webList = getFilterList(gistItem, languageChoices);
-			}
-			for (var i=0; i<webList.length; i++) {
-			 console.log(webList[i]);
-			}
-			
-			//console.log(webList[1]);
+		var num = document.getElementsByName("pageNumber")[0].value;
+		if (num < 1 || num > 5) {
+		var text = document.createTextNode("Input out of range");
+		document.getElementById("outOfRange").appendChild(text);
+		return;
+	}
+	for (var index = 0; index < num; index++) {
+		requset = new XMLHttpRequest();
+		var url = "https://api.github.com/gists";
+		var pageReq = index + 1;
+		var params = {
+			page: pageReq,
+		};
+		url += "?" + urlStringify(params);
+		requset.open("GET", url);
+		requset.send();
+		requset.onreadystatechange = function() {
+			if(this.readyState === 4) {
+				var gistItem = JSON.parse(this.responseText);
+				var languageChoices = getLanguageFromUser();
 				
-			
-			for (i; i < gistItem.length; i++){
-				var desc = gistItem[i].description;
-				var htmlUrl= gistItem[i].html_url;
-				var lang = getLanguage(gistItem[i].files);
-			
-			/*if (lang == "Python") {
-				console.log(desc);
-				console.log(htmlUrl);
-				console.log(lang);
-			}*/
-			}
+				if (languageChoices.length == 0){
+					//console.log("empty lan");
+					webList = getNonFilterList(gistItem);
+				} else {
+					console.log(languageChoices);
+					webList = getFilterList(gistItem, languageChoices);
+				}
+				makeList(webList, "Add to Favorites", "searchList");
+				//localStorage.setItem("webList", JSON.stringify(webList));
+				addToLocalStorage(webList);
+				//displaySearchList();
+			}	
+		};
+	}	
+}
+function addToLocalStorage(onePage){
+	var oldList = JSON.parse(localStorage.getItem("myList")) || [];
+	for (var i = 0; i < onePage.length; i++){
+		oldList.push(onePage[i]);
+	}
+	localStorage.setItem("myList", JSON.stringify(oldList));
+}
+function makeList(obj, buttonName, webId) {
+	var listElement = document.createElement("ul");
+ 	document.getElementById(webId).appendChild(listElement);
+    var numberOfListItems = obj.length;
+    for( var i =  0 ; i < numberOfListItems ; ++i){
+		var listItem = makeLi(obj[i]);
+		if (buttonName == "Add to Favorites") {
+			listItem.appendChild(makeAddButton(obj[i], buttonName));
+		} else if (buttonName == "Remove") {
+			listItem.appendChild(makeRemoveButton(obj[i], buttonName));
 		}
-	};
-	requset.open("GET", url);
-	requset.send();
+		listElement.appendChild(listItem);
+   }
+}
+function makeLi(obj) {
+	var listItem = document.createElement("li");
+	var aTag = document.createElement("a");
+	aTag.setAttribute("href", obj.htmlUrl);
+	var text = document.createTextNode("ID: " + obj.id + "  DESCRIPTION: " + obj.desc);
+	aTag.appendChild(text);
+	listItem.appendChild(aTag);
+	return listItem;
+}
+function makeAddButton(obj, buttonValue){
+	var oneButton = document.createElement("input");
+		oneButton.type = "button";
+		oneButton.value = buttonValue;
+		oneButton.id = obj.id;
+		oneButton.onclick = function() { addToFavorite(this.id);};
+		return oneButton;
+}
+function makeRemoveButton(obj, buttonValue){
+	var oneButton = document.createElement("input");
+	oneButton.type = "button";
+	oneButton.value = buttonValue;
+	oneButton.id = obj.id;
+	oneButton.onclick = function() { removeItemInFavorite(this.id);};
+	return oneButton;
+}
+function addToFavorite(itemId){
+	var oldItems = JSON.parse(localStorage.getItem("favoriteList")) || [];
+	var storageItems = JSON.parse(localStorage.getItem("myList"));
+	for (var i = 0; i < storageItems.length; i++) {
+		if(storageItems[i].id == itemId) {
+			oldItems.push(storageItems[i]);
+			localStorage.setItem("favoriteList", JSON.stringify(oldItems));
+			var deleteNode = document.getElementById(itemId).parentNode;
+			if (deleteNode.parentNode) {
+				deleteNode.parentNode.removeChild(deleteNode);
+			}
+			var listItem = makeLi(storageItems[i]);
+			listItem.appendChild(makeRemoveButton(storageItems[i], "Remove"));
+			if (document.getElementById("myFavoriteList").childNodes[0] == undefined){
+				var listElement = document.createElement("ul");
+				document.getElementById("myFavoriteList").appendChild(listElement);
+			}
+			document.getElementById("myFavoriteList").childNodes[0].appendChild(listItem);
+			return;
+		}	
+	}
+}
+function removeItemInFavorite(itemId) {
+	var oldItems = JSON.parse(localStorage.getItem("favoriteList")) || [];
+	var deleteNode = document.getElementById(itemId).parentNode;
+		if (deleteNode.parentNode) {
+			deleteNode.parentNode.removeChild(deleteNode);
+		}
+	for (var i = 0; i < oldItems.length; i++) {
+		if(oldItems[i].id == itemId) {
+			oldItems.splice(i,1);
+			localStorage.setItem("favoriteList", JSON.stringify(oldItems));
+			return;
+		}	
+	}
 }
 function getLanguage(obj) {
 	for (var prop1 in obj){
@@ -73,13 +149,16 @@ function getLanguageFromUser() {
 	return languageList;
 }
 function getFilterList(str, language_list){
+	var itemsInFavorites = JSON.parse(localStorage.getItem("favoriteList")) || [];
 	var i = 0;
 	var arr = [];
 	for (i; i< str.length; i++){
 		var lang = getLanguage(str[i].files);
 		if(inTheList(lang, language_list)) {
 			var s = new Entry(str[i].description, str[i].id, str[i].html_url);
-			arr.push(s);
+			if (!inTheFavorite (s.id, itemsInFavorites)) {
+				arr.push(s);
+			}
 		}
 	}
 	return arr;
@@ -92,12 +171,24 @@ function inTheList(aLang, aList) {
 	}
 	return false;
 }
+function inTheFavorite(oneId, aList) {
+	for (var i = 0; i < aList.length; i++) {
+		if (oneId == aList[i].id) {
+			console.log("called inthe fav");
+			return true;
+		}
+	}
+	return false;
+}
 function getNonFilterList(str) {
+	var itemsInFavorites = JSON.parse(localStorage.getItem("favoriteList")) || [];
 	var i = 0;
 	var arr = [];
 	for (i; i< str.length; i++){
 		var s = new Entry(str[i].description, str[i].id, str[i].html_url);
-		arr.push(s);
+		if (!inTheFavorite (s.id, itemsInFavorites)) {
+			arr.push(s);
+		}	
 	}
 	return arr;
 }
@@ -106,7 +197,6 @@ function Entry(oneDesc, oneId, oneUrl){
 	this.id = oneId;
 	this.htmlUrl = oneUrl;
 }
-
 function urlStringify(obj){
 	var str = [];
 	for (var prop in obj) {
@@ -115,26 +205,18 @@ function urlStringify(obj){
 	}
 	return str.join('&');
 }
-function favoriteList() {
-	list = [];
+function clearFavoriteList(){
+	var element = document.getElementById("myFavoriteList");
+	while(element.firstChild){
+		element.removeChild(element.firstChild);
+	}
+	localStorage.removeItem("favoriteList");
 }
-
 window.onload = function(){
-	var favoriteList = localStorage.getItem("list");
+	var theList = JSON.parse(localStorage.getItem("favoriteList")) || [];
+	makeList(theList, "Remove", "myFavoriteList");
 	if (favoriteList === null) {
 		document.getElementById("emptyList").innerHTML = "The list is empty";
 	}
-	//getGist();
-}
-
-
-
-function saveDemoInput() {
-  localStorage.setItem("demoText", document.getElementsByName ("demo-input")[0].value);
-}
-function clearLocalStorage() {
-  localStorage.clear();
-}
-function displayLocalStorage() {
-  document.getElementById("output").innerHTML = localStorage.getItem("demoText");
+	localStorage.removeItem("myList");
 }
