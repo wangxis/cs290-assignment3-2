@@ -215,8 +215,5 @@ function clearFavoriteList(){
 window.onload = function(){
 	var theList = JSON.parse(localStorage.getItem("favoriteList")) || [];
 	makeList(theList, "Remove", "myFavoriteList");
-	if (favoriteList === null) {
-		document.getElementById("emptyList").innerHTML = "The list is empty";
-	}
 	localStorage.removeItem("myList");
 }
