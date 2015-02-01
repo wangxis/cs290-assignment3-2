@@ -29,7 +29,6 @@ function getGist() {
 					//console.log("empty lan");
 					webList = getNonFilterList(gistItem);
 				} else {
-					console.log(languageChoices);
 					webList = getFilterList(gistItem, languageChoices);
 				}
 				makeList(webList, "Add to Favorites", "searchList");
